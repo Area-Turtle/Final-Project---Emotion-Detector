@@ -5,9 +5,9 @@ url = "https://sn-watson-emotion.labs.skills.network/v1/watson.runtime.nlp.v1/Nl
 
 headers = { "grpc-metadata-mm-model-id": "emotion_aggregated-workflow_lang_en_stock" } 
 
-def emotion_detector(text_to_analyze):
+def emotion_detector(text_to_analyse):
 
-    input_json = {"raw_document": {"text": text_to_analyze}}
+    input_json = {"raw_document": {"text": text_to_analyse}}
 
     response = requests.post(
         url,
@@ -15,6 +15,15 @@ def emotion_detector(text_to_analyze):
         json=input_json,
         timeout=30
     )
+
+    if response.status_code == 400: return { 
+        'anger': None, 
+        'disgust': None, 
+        'fear': None, 
+        'joy': None, 
+        'sadness': None, 
+        'dominant_emotion': None 
+        }
 
     response_dict = json.loads(response.text)
 
@@ -44,11 +53,3 @@ def emotion_detector(text_to_analyze):
         'sadness': sadness_score,
         'dominant_emotion': dominant_emotion
     }
-
-# >>> from emotion_detection import emotion_detector
-# >>> emotion_detector("I am so happy I am doing this.")
-# {'anger': 0.0043339236, 'disgust': 0.00037549555, 'fear': 0.0034732423, 'joy': 0.9947189, 'sadness': 0.012704818, 'dominant_emotion': 'joy'}
-# >>> 
-
-#mv ./emotion_detection.py ./EmotionDetection
-
